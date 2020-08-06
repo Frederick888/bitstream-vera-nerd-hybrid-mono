@@ -119,21 +119,37 @@ if __name__ == "__main__":
                 continue
 
             # scale glyph
+            bounding = glyph.boundingBox()  # xmin,ymin,xmax,ymax
             print("Glyph U+{:02x} width: {}".format(glyph.unicode, glyph.width))
             column_width = wcwidth(chr(glyph.unicode))
             print("Glyph U+{:02x} column width: {}".format(glyph.unicode, column_width))
-            scale_factor = width_bitstream / glyph.width * column_width
-            scale = psMat.scale(scale_factor, scale_factor)
-            glyph.transform(scale)
+            scale_factor_horizontal = width_bitstream / glyph.width * column_width
+            scale_horizontal = psMat.scale(scale_factor_horizontal)
+            scale_factor_vertical = forge_bitstream.ascent / (bounding[3] - bounding[1])
+            scale_vertical = psMat.scale(scale_factor_vertical)
+            glyph.transform(
+                scale_horizontal
+                if scale_factor_horizontal <= scale_factor_vertical
+                else scale_vertical
+            )
 
-            # move upwards
             bounding = glyph.boundingBox()  # xmin,ymin,xmax,ymax
             print("Glyph U+{:02x} bounding: {}".format(glyph.unicode, bounding))
+
+            # move upwards
             vcentre_glyph = (bounding[3] - bounding[1]) / 2 + bounding[1]
             print("Glyph U+{:02x} vcentre: {}".format(glyph.unicode, vcentre_glyph))
             vshift = forge_bitstream.ascent / 2 - vcentre_glyph
             print("Glyph U+{:02x} vshift: {}".format(glyph.unicode, vshift))
             translate = psMat.translate(0, vshift)
+            glyph.transform(translate)
+
+            # move rightwards
+            hcentre_glyph = (bounding[2] - bounding[0]) / 2 + bounding[0]
+            print("Glyph U+{:02x} hcentre: {}".format(glyph.unicode, hcentre_glyph))
+            hshift = width_bitstream * column_width / 2 - hcentre_glyph
+            print("Glyph U+{:02x} vshift: {}".format(glyph.unicode, hshift))
+            translate = psMat.translate(hshift, 0)
             glyph.transform(translate)
 
             glyph.width = int(width_bitstream * column_width)
