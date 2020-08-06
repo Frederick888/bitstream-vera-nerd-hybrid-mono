@@ -155,7 +155,6 @@ if __name__ == "__main__":
             glyph.width = int(width_bitstream * column_width)
 
         forge_bitstream.mergeFonts(forge_merge, True)
-        os.remove(font_merge.path)
 
     # produce new font
     attrs = [
@@ -173,4 +172,3 @@ if __name__ == "__main__":
     forge_bitstream.sfnt_names = tuple(new_names)
 
     forge_bitstream.generate(arguments["--output"])
-    os.remove(font_bitstream.path)
