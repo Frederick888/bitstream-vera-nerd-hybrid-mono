@@ -31,6 +31,7 @@ class Font:
         self.uri: str = uri
         self.forge: fontforge.font = None
         self.path = None
+        self.local: bool = False
 
     def open(self) -> fontforge.font:
         if self.forge is not None:
@@ -39,6 +40,7 @@ class Font:
         if os.path.exists(self.uri):
             # file path given
             self.path = self.uri
+            self.local = True
             return fontforge.open(self.uri)
         uri_from = self.uri.find("::http")
         if uri_from < 0:
@@ -74,6 +76,10 @@ class Font:
 
     def vwidth(self) -> float:
         return next(self.open().glyphs()).vwidth
+
+    def cleanup(self):
+        if not self.local:
+            os.remove(self.path)
 
 
 def eprint(*args, **kwargs):
@@ -164,6 +170,7 @@ if __name__ == "__main__":
             glyph.width = int(width_bitstream * column_width)
 
         forge_bitstream.mergeFonts(forge_merge, True)
+        font_merge.cleanup()
 
     # produce new font
     attrs = [
@@ -181,3 +188,4 @@ if __name__ == "__main__":
     forge_bitstream.sfnt_names = tuple(new_names)
 
     forge_bitstream.generate(arguments["--output"])
+    font_bitstream.cleanup()
