@@ -87,6 +87,8 @@ if __name__ == "__main__":
     font_bitstream = Font(arguments["--base"].strip())
     forge_bitstream = font_bitstream.open()
 
+    forge_bitstream.encoding = "UnicodeFull"
+
     # bitstream metrics
     vcentre_bitstream = (forge_bitstream.ascent - forge_bitstream.descent) / 2
     width_bitstream = font_bitstream.width()  # 1233
