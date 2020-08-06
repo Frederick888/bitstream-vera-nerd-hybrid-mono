@@ -3,13 +3,14 @@
 """Bitstream Vera Nerd Font Mono patching script
 
 Usage:
-    main.py --base=<base> --output=<output> <merge>...
+    main.py --base=<base> --output=<output> [--categories=<categories>] <merge>...
     main.py (-h | --help)
 
 Options:
     -h --help           Show this screen
     --base=<base>       URI to base Bitstream Vera font file
     --output=<output>   Filename of generated font
+    --categories=<categories>   Unicode categories to merge (comma-separated), e.g. Lt,Ll,So
     <merge>...          URI to font file(s) to be merged
 """
 
@@ -20,6 +21,7 @@ import psMat
 import requests
 import sys
 import tempfile
+import unicodedata
 import zipfile
 from docopt import docopt
 from urllib.parse import urlparse
@@ -114,6 +116,9 @@ if __name__ == "__main__":
         )
     )
 
+    # categories
+    categories = set((arguments["--categories"] or "").strip().split(","))
+
     # adjust and merge
     for font_merge_uri in arguments["<merge>"]:
         print("Processing {}".format(font_merge_uri))
@@ -121,6 +126,22 @@ if __name__ == "__main__":
         forge_merge = font_merge.open()
 
         glyph: fontforge.glyph
+        if len(categories) > 0:
+            for glyph in forge_merge.glyphs():
+                if (
+                    glyph.unicode > 0
+                    and unicodedata.category(chr(glyph.unicode)) in categories
+                ):
+                    eprint(
+                        "Glyph U+{:02x} in {} selected".format(
+                            glyph.unicode, unicodedata.category(chr(glyph.unicode))
+                        )
+                    )
+                    forge_merge.selection.select(("more",), glyph)
+            forge_merge.selection.invert()
+            forge_merge.clear()
+            forge_merge.selection.none()
+
         for glyph in forge_merge.glyphs():
             if glyph.unicode <= 0:
                 continue
