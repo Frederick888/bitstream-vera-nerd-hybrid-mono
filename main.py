@@ -76,6 +76,10 @@ class Font:
         return next(self.open().glyphs()).vwidth
 
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
 def new_font_name(font_name: str) -> str:
     return font_name.replace("Nerd Font", "Nerd Hybrid Font").replace(
         "NerdFont", "NerdHybridFont"
@@ -84,6 +88,7 @@ def new_font_name(font_name: str) -> str:
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
+    print("Base Bitstream is {}".format(arguments["--base"].strip()))
     font_bitstream = Font(arguments["--base"].strip())
     forge_bitstream = font_bitstream.open()
 
@@ -93,7 +98,7 @@ if __name__ == "__main__":
     vcentre_bitstream = (forge_bitstream.ascent - forge_bitstream.descent) / 2
     width_bitstream = font_bitstream.width()  # 1233
     vwidth_bitstream = font_bitstream.vwidth()  # 2048
-    print(
+    eprint(
         "Bitstream ascent: {}, descent: {}, width: {}, vwidth: {}, vcentre: {}".format(
             forge_bitstream.ascent,
             forge_bitstream.descent,
@@ -122,9 +127,11 @@ if __name__ == "__main__":
 
             # scale glyph
             bounding = glyph.boundingBox()  # xmin,ymin,xmax,ymax
-            print("Glyph U+{:02x} width: {}".format(glyph.unicode, glyph.width))
+            eprint("Glyph U+{:02x} width: {}".format(glyph.unicode, glyph.width))
             column_width = wcwidth(chr(glyph.unicode))
-            print("Glyph U+{:02x} column width: {}".format(glyph.unicode, column_width))
+            eprint(
+                "Glyph U+{:02x} column width: {}".format(glyph.unicode, column_width)
+            )
             scale_factor_horizontal = width_bitstream / glyph.width * column_width
             scale_horizontal = psMat.scale(scale_factor_horizontal)
             scale_factor_vertical = forge_bitstream.ascent / (bounding[3] - bounding[1])
@@ -136,21 +143,21 @@ if __name__ == "__main__":
             )
 
             bounding = glyph.boundingBox()  # xmin,ymin,xmax,ymax
-            print("Glyph U+{:02x} bounding: {}".format(glyph.unicode, bounding))
+            eprint("Glyph U+{:02x} bounding: {}".format(glyph.unicode, bounding))
 
             # move upwards
             vcentre_glyph = (bounding[3] - bounding[1]) / 2 + bounding[1]
-            print("Glyph U+{:02x} vcentre: {}".format(glyph.unicode, vcentre_glyph))
+            eprint("Glyph U+{:02x} vcentre: {}".format(glyph.unicode, vcentre_glyph))
             vshift = forge_bitstream.ascent / 2 - vcentre_glyph
-            print("Glyph U+{:02x} vshift: {}".format(glyph.unicode, vshift))
+            eprint("Glyph U+{:02x} vshift: {}".format(glyph.unicode, vshift))
             translate = psMat.translate(0, vshift)
             glyph.transform(translate)
 
             # move rightwards
             hcentre_glyph = (bounding[2] - bounding[0]) / 2 + bounding[0]
-            print("Glyph U+{:02x} hcentre: {}".format(glyph.unicode, hcentre_glyph))
+            eprint("Glyph U+{:02x} hcentre: {}".format(glyph.unicode, hcentre_glyph))
             hshift = width_bitstream * column_width / 2 - hcentre_glyph
-            print("Glyph U+{:02x} vshift: {}".format(glyph.unicode, hshift))
+            eprint("Glyph U+{:02x} vshift: {}".format(glyph.unicode, hshift))
             translate = psMat.translate(hshift, 0)
             glyph.transform(translate)
 
