@@ -43,7 +43,7 @@ class Font:
             # file path given
             self.path = self.uri
             self.local = True
-            return fontforge.open(self.uri)
+            return fontforge.open(self.uri, ("hidewindow",))
         uri_from = self.uri.find("::http")
         if uri_from < 0:
             # direct URI to font file
@@ -64,7 +64,7 @@ class Font:
                 zip_info.filename = os.path.basename(path)
                 zip_file.extract(zip_info, os.path.dirname(path))
         os.close(handle)
-        self.forge = fontforge.open(path)
+        self.forge = fontforge.open(path, ("hidewindow",))
         self.path = path
         return self.forge
 
