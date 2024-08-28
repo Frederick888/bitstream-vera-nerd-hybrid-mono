@@ -4,7 +4,6 @@ import fontforge
 import re
 import requests
 import sys
-import unicodedata
 
 BLOCK_INFO_URL = "https://unicode.org/Public/UNIDATA/Blocks.txt"
 BLOCK_LINE_RE = re.compile(r"^([0-9A-Z]+)\.\.([0-9A-Z]+); (.+)")
