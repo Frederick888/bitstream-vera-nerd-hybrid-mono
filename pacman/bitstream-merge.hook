@@ -8,6 +8,10 @@ Target=ttf-bitstream-vera-mono-nerd
 [Action]
 When=PostTransaction
 Depends=python
+Depends=python-docopt
+Depends=python-wcwidth
+Depends=python-requests
+Depends=python-requests-file
 Depends=fontforge
 NeedsTargets
 Exec=/usr/local/bin/bitstream-merge-hook.sh
