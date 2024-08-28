@@ -24,7 +24,6 @@ import tempfile
 import unicodedata
 import zipfile
 from docopt import docopt
-from urllib.parse import urlparse
 from wcwidth import wcwidth
 from requests_file import FileAdapter
 
@@ -49,8 +48,7 @@ class Font:
         if uri_from < 0:
             uri_from = self.uri.find("::file://")
         if uri_from < 0:
-            # direct URI to font file
-            parsed_uri = urlparse(self.uri)
+            # direct file path
             filename = None
             uri = self.uri
         else:
