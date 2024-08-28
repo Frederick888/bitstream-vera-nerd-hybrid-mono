@@ -2,7 +2,6 @@
 Operation=Install
 Operation=Upgrade
 Type=Package
-Target=nerd-fonts-complete
 Target=nerd-fonts-bitstream-vera-mono
 Target=ttf-bitstream-vera-mono-nerd
 

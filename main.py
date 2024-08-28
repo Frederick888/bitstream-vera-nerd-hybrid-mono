@@ -89,8 +89,10 @@ def eprint(*args, **kwargs):
 
 
 def new_font_name(font_name: str) -> str:
-    return font_name.replace("Nerd Font", "Nerd Hybrid Font").replace(
-        "NerdFont", "NerdHybridFont"
+    return (
+        font_name.replace("Nerd Font", "Nerd Hybrid Font")
+        .replace("NerdFont", "NerdHybridFont")
+        .replace("NFM", "NFHM")
     )
 
 

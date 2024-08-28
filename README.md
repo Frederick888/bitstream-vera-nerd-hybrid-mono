@@ -31,7 +31,7 @@ Merge `Noto Emoji` and `Symbola` into `Bitstream Vera Sans Mono Nerd Font Comple
 
 ```sh
 ./main.py \
-    --base "Bitstream Vera Sans Mono Nerd Font Complete Mono.ttf::https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/BitstreamVeraSansMono.zip" \
+    --base "BitstromWeraNerdFontMono-Regular.ttf::https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/BitstreamVeraSansMono.zip" \
     --output "./Bitstream Vera Sans Mono Nerd Hybrid Font Complete Mono.ttf" \
     --categories "Co,Cs,Sc,Sk,Sm,So" \
     "NotoEmoji-Regular.ttf::https://noto-website-2.storage.googleapis.com/pkgs/NotoEmoji-unhinted.zip" \
