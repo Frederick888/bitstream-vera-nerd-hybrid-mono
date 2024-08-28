@@ -26,6 +26,7 @@ import zipfile
 from docopt import docopt
 from urllib.parse import urlparse
 from wcwidth import wcwidth
+from requests_file import FileAdapter
 
 
 class Font:
@@ -46,6 +47,8 @@ class Font:
             return fontforge.open(self.uri, ("hidewindow",))
         uri_from = self.uri.find("::http")
         if uri_from < 0:
+            uri_from = self.uri.find("::file://")
+        if uri_from < 0:
             # direct URI to font file
             parsed_uri = urlparse(self.uri)
             filename = None
@@ -54,7 +57,11 @@ class Font:
             # zip file
             filename = self.uri[:uri_from]
             uri = self.uri[uri_from + 2 :]
-        response = requests.get(uri)
+
+        s = requests.Session()
+        s.mount("file://", FileAdapter())
+
+        response = s.get(uri)
         (handle, path) = tempfile.mkstemp(prefix="bitstream-vera-patch-")
         if uri_from < 0:
             handle.write(response.body)
