@@ -10,6 +10,7 @@ build_local: download
         --base "BitstromWeraNerdFontMono-Regular.ttf::file://$PWD/BitstreamVeraSansMono.zip" \
         --output "./Bitstream Vera Sans Mono Nerd Hybrid Font Complete Mono.ttf" \
         --categories "Co,Cs,Sc,Sk,Sm,So" \
+        --monospace \
         "NotoEmoji-Regular.ttf::file://$PWD/NotoEmoji-unhinted.zip" \
         "Symbola.otf::file://$PWD/Symbola.zip"
 

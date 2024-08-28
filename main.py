@@ -3,15 +3,16 @@
 """Bitstream Vera Nerd Font Mono patching script
 
 Usage:
-    main.py --base=<base> --output=<output> [--categories=<categories>] <merge>...
+    main.py --base=<base> --output=<output> [--categories=<categories>] [--monospace] <merge>...
     main.py (-h | --help)
 
 Options:
-    -h --help           Show this screen
-    --base=<base>       URI to base Bitstream Vera font file
-    --output=<output>   Filename of generated font
+    -h --help                   Show this screen
+    --base=<base>               URI to base Bitstream Vera font file
+    --output=<output>           Filename of generated font
     --categories=<categories>   Unicode categories to merge (comma-separated), e.g. Lt,Ll,So
-    <merge>...          URI to font file(s) to be merged
+    --monospace                 Merge only single-columned glyphs
+    <merge>...                  URI to font file(s) to be merged
 """
 
 import fontforge
@@ -104,6 +105,7 @@ def new_font_name(font_name: str) -> str:
 if __name__ == "__main__":
     arguments = docopt(__doc__)
     print("Base Bitstream is {}".format(arguments["--base"].strip()))
+    monospace = arguments["--monospace"]
     font_bitstream = Font(arguments["--base"].strip())
     forge_bitstream = font_bitstream.open()
 
@@ -133,19 +135,38 @@ if __name__ == "__main__":
         forge_merge = font_merge.open()
 
         glyph: fontforge.glyph
-        if len(categories) > 0:
+        if len(categories) > 0 or monospace:
+            # select glyphs to be removed by font_merge.clear()
+            forge_merge.selection.all()
             for glyph in forge_merge.glyphs():
-                if (
-                    glyph.unicode > 0
-                    and unicodedata.category(chr(glyph.unicode)) in categories
-                ):
+                if glyph.unicode <= 0:
+                    continue
+
+                category = unicodedata.category(chr(glyph.unicode))
+                if category not in categories:
                     eprint(
-                        "Glyph U+{:02x} in {} selected".format(
-                            glyph.unicode, unicodedata.category(chr(glyph.unicode))
+                        "Glyph U+{:02x} in category {} as it doesn't belong in {}".format(
+                            glyph.unicode, category, ", ".join(categories)
                         )
                     )
-                    forge_merge.selection.select(("more",), glyph)
-            forge_merge.selection.invert()
+                    continue
+
+                column_width = wcwidth(chr(glyph.unicode))
+                if monospace and column_width != 1:
+                    eprint(
+                        "Glyph U+{:02x} in category {} skipped as it has column width {}".format(
+                            glyph.unicode, category, column_width
+                        )
+                    )
+                    continue
+
+                eprint(
+                    "Glyph U+{:02x} in {} marked for merging".format(
+                        glyph.unicode, unicodedata.category(chr(glyph.unicode))
+                    )
+                )
+                # deselect the glyph so that it's not cleared below
+                forge_merge.selection.select(("less",), glyph)
             forge_merge.clear()
             forge_merge.selection.none()
 
