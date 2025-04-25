@@ -9,7 +9,7 @@ while read -r trg; do
             --categories 'Co,Cs,Sc,Sk,Sm,So' \
             --monospace \
             'NotoEmoji-Regular.ttf::https://noto-website-2.storage.googleapis.com/pkgs/NotoEmoji-unhinted.zip' \
-            'Symbola.otf::https://dn-works.com/wp-content/uploads/2020/UFAS-Fonts/Symbola.zip' 2>/dev/null
+            '/usr/share/fonts/OTF/Symbola.otf' 2>/dev/null
         ;;
     esac
 done

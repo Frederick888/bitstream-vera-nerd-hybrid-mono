@@ -40,5 +40,5 @@ Merge `Noto Emoji` and `Symbola` into `Bitstream Vera Sans Mono Nerd Font Comple
     --categories "Co,Cs,Sc,Sk,Sm,So" \
     --monospace \
     "NotoEmoji-Regular.ttf::https://noto-website-2.storage.googleapis.com/pkgs/NotoEmoji-unhinted.zip" \
-    "Symbola.otf::https://dn-works.com/wp-content/uploads/2020/UFAS-Fonts/Symbola.zip"
+    "/usr/share/fonts/OTF/Symbola.otf"
 ```
