@@ -145,7 +145,7 @@ if __name__ == "__main__":
                 category = unicodedata.category(chr(glyph.unicode))
                 if category not in categories:
                     eprint(
-                        "Glyph U+{:02x} in category {} as it doesn't belong in {}".format(
+                        "Glyph U+{:02x} in category {} skipped as it doesn't belong in {}".format(
                             glyph.unicode, category, ", ".join(categories)
                         )
                     )
