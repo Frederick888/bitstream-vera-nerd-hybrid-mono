@@ -160,6 +160,14 @@ if __name__ == "__main__":
                     )
                     continue
 
+                if glyph.boundingBox() == (0.0,) * 4:
+                    eprint(
+                        "Glyph U+{:02x} skipped as its bounding box is empty".format(
+                            glyph.unicode
+                        )
+                    )
+                    continue
+
                 eprint(
                     "Glyph U+{:02x} in {} marked for merging".format(
                         glyph.unicode, unicodedata.category(chr(glyph.unicode))
